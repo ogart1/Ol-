@@ -201,9 +201,7 @@ ScreenGui.Name = "HUNSFUCK_UI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.CoreGui
 ScreenGui.Enabled = true
-ScreenGui.BackgroundTransparency = 1 -- Garantir que o fundo do ScreenGui é sempre transparente
 
--- Adiciona UIScale para responsividade global
 local uiScale = Instance.new("UIScale")
 uiScale.Scale = 0.9 -- Ajusta a escala da UI para telas menores
 uiScale.Parent = ScreenGui
