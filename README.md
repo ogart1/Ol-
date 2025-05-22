@@ -1,4 +1,5 @@
-
+--// HUNSFUCK V5 ULTRA ALPHA by ogart (A INTERFACE DEFINITIVA!)
+--// Créditos: ogart | Script 100% funcional no Delta Executor
 
 local keyCorreta = "byogart" -- 🔑 A chave para o poder!
 
@@ -66,8 +67,9 @@ local function showNotification(text, color, duration)
 
     duration = duration or 3
     local NotificationFrame = Instance.new("Frame")
-    NotificationFrame.Size = UDim2.new(0, 280, 0, 60)
-    NotificationFrame.Position = UDim2.new(0.5, -140, 1, 0) -- Começa fora da tela, embaixo
+    NotificationFrame.Size = UDim2.new(0.7, 0, 0, 60) -- Ajustado para escala
+    NotificationFrame.Position = UDim2.new(0.5, 0, 1, 0) -- Começa fora da tela, embaixo, centralizado por AnchorPoint
+    NotificationFrame.AnchorPoint = Vector2.new(0.5, 1) -- Ancoragem na parte inferior central
     NotificationFrame.BackgroundColor3 = color
     NotificationFrame.BorderSizePixel = 0
     NotificationFrame.Parent = game.CoreGui
@@ -97,7 +99,7 @@ local function showNotification(text, color, duration)
     NotifText.Parent = NotificationFrame
 
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-    local goalIn = {Position = UDim2.new(0.5, -140, 1, -70)} -- Sobe para a posição visível
+    local goalIn = {Position = UDim2.new(0.5, 0, 1, -70)} -- Sobe para a posição visível
 
     local tweenIn = TweenService:Create(NotificationFrame, tweenInfo, goalIn)
     tweenIn:Play()
@@ -105,7 +107,7 @@ local function showNotification(text, color, duration)
 
     task.wait(duration)
 
-    local goalOut = {Position = UDim2.new(0.5, -140, 1, 0), BackgroundTransparency = 1}
+    local goalOut = {Position = UDim2.new(0.5, 0, 1, 0), BackgroundTransparency = 1}
     local textGoalOut = {TextTransparency = 1}
 
     local tweenOut = TweenService:Create(NotificationFrame, tweenInfo, goalOut)
@@ -137,18 +139,32 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "HunsfuckV5ALPHA_UI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.CoreGui
+ScreenGui.Enabled = true -- Garante que o ScreenGui está habilitado
+
+-- Adiciona UIScale para responsividade global
+local uiScale = Instance.new("UIScale")
+uiScale.Scale = 0.9 -- Ajusta a escala da UI para telas menores
+uiScale.Parent = ScreenGui
 
 -- Key Frame 🔑
 local keyFrame = Instance.new("Frame")
-keyFrame.Size = UDim2.new(0, 400, 0, 220)
-keyFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
+keyFrame.Size = UDim2.new(0.7, 0, 0.45, 0) -- Ajustado para escala
+keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centralizado
+keyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 keyFrame.BackgroundColor3 = CORES.FundoUI
 keyFrame.BorderSizePixel = 0
 keyFrame.Parent = ScreenGui
-keyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 keyFrame.ClipsDescendants = true
 keyFrame.Visible = true
 keyFrame.CornerRadius = UDim.new(0, 12)
+keyFrame.ZIndex = 10 -- Alto o suficiente para aparecer
+
+-- Mantém a proporção do Key Frame
+local keyFrameAspectRatio = Instance.new("UIAspectRatioConstraint")
+keyFrameAspectRatio.AspectRatio = 400 / 220 -- Proporção original (largura / altura)
+keyFrameAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
+keyFrameAspectRatio.DominantAxis = Enum.DominantAxis.Width
+keyFrameAspectRatio.Parent = keyFrame
 
 local uiStrokeKey = Instance.new("UIStroke")
 uiStrokeKey.Color = CORES.BordaClara
@@ -157,30 +173,32 @@ uiStrokeKey.Thickness = 1
 uiStrokeKey.Parent = keyFrame
 
 local tituloKey = Instance.new("TextLabel")
-tituloKey.Size = UDim2.new(1, 0, 0, 70)
+tituloKey.Size = UDim2.new(1, 0, 0.3, 0) -- 30% da altura do pai
 tituloKey.Position = UDim2.new(0, 0, 0, 0)
 tituloKey.BackgroundColor3 = CORES.Primaria
 tituloKey.TextColor3 = CORES.TextoClaro
 tituloKey.Font = Enum.Font.SourceSansBold
-tituloKey.TextSize = 40
+tituloKey.TextSize = 30 -- Ajustado para mobile
 tituloKey.Text = "💀 HUNSFUCK 💀"
 tituloKey.Parent = keyFrame
+tituloKey.ZIndex = 11
 
 local caixaKey = Instance.new("TextBox")
-caixaKey.Size = UDim2.new(0.85, 0, 0, 45)
+caixaKey.Size = UDim2.new(0.85, 0, 0.18, 0) -- 18% da altura do pai
 caixaKey.Position = UDim2.new(0.075, 0, 0.45, 0)
-caixaKey.PlaceholderText = "🔑 Digite a key"
+caixaKey.PlaceholderText = "🔑 Digite a chave secreta..."
 caixaKey.Text = ""
 caixaKey.BackgroundColor3 = CORES.FundoComponente
 caixaKey.TextColor3 = CORES.TextoClaro
 caixaKey.Font = Enum.Font.SourceSans
-caixaKey.TextSize = 24
+caixaKey.TextSize = 20 -- Ajustado
 caixaKey.BorderSizePixel = 0
 caixaKey.Parent = keyFrame
 caixaKey.CornerRadius = UDim.new(0, 6)
+caixaKey.ZIndex = 11
 
 local botaoConfirmar = Instance.new("TextButton")
-botaoConfirmar.Size = UDim2.new(0.65, 0, 0, 50)
+botaoConfirmar.Size = UDim2.new(0.65, 0, 0.22, 0) -- 22% da altura do pai
 botaoConfirmar.Position = UDim2.new(0.175, 0, 0.75, 0)
 botaoConfirmar.Text = "🚀 Confirmar Acesso 🚀"
 botaoConfirmar.Font = Enum.Font.SourceSansBold
@@ -189,27 +207,38 @@ botaoConfirmar.BackgroundColor3 = CORES.Sucesso
 botaoConfirmar.BorderSizePixel = 0
 botaoConfirmar.Parent = keyFrame
 botaoConfirmar.CornerRadius = UDim.new(0, 10)
+botaoConfirmar.ZIndex = 11
 
 local creditosKey = Instance.new("TextLabel")
-creditosKey.Size = UDim2.new(1, 0, 0, 30)
-creditosKey.Position = UDim2.new(0, 0, 1, -30)
+creditosKey.Size = UDim2.new(1, 0, 0.1, 0) -- 10% da altura do pai
+creditosKey.Position = UDim2.new(0, 0, 0.9, 0) -- Ajustado para base
 creditosKey.Text = "✨ Créditos: ogart - A Lenda! ✨"
 creditosKey.TextColor3 = CORES.Sucesso
 creditosKey.BackgroundTransparency = 1
 creditosKey.Font = Enum.Font.SourceSansItalic
-creditosKey.TextSize = 20
+creditosKey.TextSize = 18 -- Ajustado
 creditosKey.Parent = keyFrame
+creditosKey.ZIndex = 11
 
 -- Painel Principal ULTRA ALPHA 🚀
 local painel = Instance.new("Frame")
-painel.Size = UDim2.new(0, 550, 0, 550) -- Tamanho inicial, um pouco maior
-painel.Position = UDim2.new(0.02, 0, 0.15, 0)
+painel.Size = UDim2.new(0.9, 0, 0.8, 0) -- Tamanho inicial em escala (90% largura, 80% altura)
+painel.Position = UDim2.new(0.5, 0, 0.5, 0)
+painel.AnchorPoint = Vector2.new(0.5, 0.5)
 painel.BackgroundColor3 = CORES.FundoUI
 painel.BorderSizePixel = 0
 painel.Visible = false
 painel.Parent = ScreenGui
 painel.ClipsDescendants = true
 painel.CornerRadius = UDim.new(0, 15)
+painel.ZIndex = 5 -- ZIndex padrão para o painel principal
+
+-- Mantém a proporção do Painel Principal
+local painelAspectRatio = Instance.new("UIAspectRatioConstraint")
+painelAspectRatio.AspectRatio = 550 / 550 -- Proporção original (1:1)
+painelAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
+painelAspectRatio.DominantAxis = Enum.DominantAxis.Height -- Tenta manter a altura dominante
+painelAspectRatio.Parent = painel
 
 local uiStrokePainel = Instance.new("UIStroke")
 uiStrokePainel.Color = CORES.BordaClara
@@ -219,17 +248,18 @@ uiStrokePainel.Parent = painel
 
 -- Título painel
 local tituloPainel = Instance.new("TextLabel")
-tituloPainel.Size = UDim2.new(1, 0, 0, 60)
+tituloPainel.Size = UDim2.new(1, 0, 0.1, 0) -- 10% da altura do painel
 tituloPainel.BackgroundColor3 = CORES.Primaria
 tituloPainel.TextColor3 = CORES.TextoClaro
 tituloPainel.Font = Enum.Font.SourceSansBold
-tituloPainel.TextSize = 34
+tituloPainel.TextSize = 28 -- Ajustado
 tituloPainel.Text = "💀 HUNSFUCK 💀"
 tituloPainel.Parent = painel
+tituloPainel.ZIndex = 6
 
 -- Botão minimizar/maximizar (dentro do painel)
 local minimizarBtn = Instance.new("TextButton")
-minimizarBtn.Size = UDim2.new(0, 45, 0, 45)
+minimizarBtn.Size = UDim2.new(0, 45, 0, 45) -- Tamanho fixo, pois é um ícone
 minimizarBtn.Position = UDim2.new(1, -50, 0, 7)
 minimizarBtn.Text = "➖"
 minimizarBtn.BackgroundColor3 = CORES.Secundaria
@@ -238,10 +268,11 @@ minimizarBtn.Font = Enum.Font.SourceSansBold
 minimizarBtn.TextSize = 30
 minimizarBtn.Parent = painel
 minimizarBtn.CornerRadius = UDim.new(0, 6)
+minimizarBtn.ZIndex = 7
 
 local painelAberto = true
 local originalSize = painel.Size
-local minimizedSize = UDim2.new(0, 550, 0, 60) -- Altura apenas do título
+local minimizedSize = UDim2.new(painel.Size.X.Scale, painel.Size.X.Offset, 0.1, 0) -- Altura apenas do título (10% do pai)
 
 minimizarBtn.MouseButton1Click:Connect(function()
     painelAberto = not painelAberto
@@ -255,7 +286,7 @@ minimizarBtn.MouseButton1Click:Connect(function()
     if painelAberto then
         task.wait(0.1) -- Pequeno delay para a animação do painel
         for _, v in pairs(painel:GetChildren()) do
-            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") then
+            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") then
                 if v ~= minimizarBtn and v ~= tituloPainel then
                     v.Visible = true
                 end
@@ -263,7 +294,7 @@ minimizarBtn.MouseButton1Click:Connect(function()
         end
     else
         for _, v in pairs(painel:GetChildren()) do
-            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") then
+            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") then
                 if v ~= minimizarBtn and v ~= tituloPainel then
                     v.Visible = false
                 end
@@ -276,7 +307,8 @@ end)
 local floatingButton = Instance.new("TextButton")
 floatingButton.Name = "FloatingButton"
 floatingButton.Size = UDim2.new(0, 60, 0, 60)
-floatingButton.Position = UDim2.new(0.5, -30, 0.95, 0) -- Centralizado na parte inferior
+floatingButton.Position = UDim2.new(0.5, 0, 0.95, 0) -- Centralizado na parte inferior
+floatingButton.AnchorPoint = Vector2.new(0.5, 0.5)
 floatingButton.BackgroundColor3 = CORES.Primaria
 floatingButton.TextColor3 = CORES.TextoClaro
 floatingButton.Font = Enum.Font.SourceSansBold
@@ -285,6 +317,7 @@ floatingButton.Text = "💡" -- Emoji de lâmpada ou ícone de menu
 floatingButton.Parent = ScreenGui
 floatingButton.CornerRadius = UDim.new(0.5, 0) -- Botão redondo
 floatingButton.Visible = true -- Visível inicialmente após o login
+floatingButton.ZIndex = 8
 
 local uiStrokeFloating = Instance.new("UIStroke")
 uiStrokeFloating.Color = CORES.FundoComponente
@@ -296,33 +329,33 @@ local panelIsVisible = false -- Estado do painel (para o botão flutuante)
 
 floatingButton.MouseButton1Click:Connect(function()
     panelIsVisible = not panelIsVisible
-    local targetAlpha = panelIsVisible and 1 or 0 -- Transparência para fade in/out
-
+    
     if panelIsVisible then
         painel.Visible = true
         painel.BackgroundTransparency = 1 -- Começa transparente
-        for _, v in pairs(painel:GetChildren()) do v.BackgroundTransparency = 1 end -- Todos os filhos transparentes
+        -- Não tornar todos os filhos transparentes aqui, a animação fará isso gradualmente
         
         local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         TweenService:Create(painel, tweenInfo, {BackgroundTransparency = 0}):Play()
         -- Animação para os filhos aparecerem gradualmente
-        task.wait(0.1)
+        task.wait(0.05) -- Pequeno delay para a animação do pai
         for _, v in pairs(painel:GetChildren()) do
             if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") then
-                TweenService:Create(v, tweenInfo, {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+                TweenService:Create(v, tweenInfo, {BackgroundTransparency = (v.BackgroundTransparency == 1 and 1 or 0), TextTransparency = 0}):Play()
             end
         end
         floatingButton.Text = "❌" -- Mudar ícone para fechar
         showNotification("Painel ABERTO! 👁️", CORES.Sucesso, 2)
     else
         local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        TweenService:Create(painel, tweenInfo, {BackgroundTransparency = 1}):Play()
+        -- Animar todos os filhos para desaparecerem gradualmente
         for _, v in pairs(painel:GetChildren()) do
             if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") then
                 TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1, TextTransparency = 1}):Play()
             end
         end
-        tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        
+        task.wait(0.2) -- Espera um pouco para a animação dos filhos começar
         TweenService:Create(painel, tweenInfo, {BackgroundTransparency = 1}):Play()
         
         task.wait(0.3) -- Espera a animação de fade out
@@ -335,8 +368,8 @@ end)
 
 -- Menu Lateral (Abas) 📁
 local menuLateral = Instance.new("Frame")
-menuLateral.Size = UDim2.new(0, 130, 1, -60) -- 130 de largura, altura do painel menos o título
-menuLateral.Position = UDim2.new(0, 0, 0, 60)
+menuLateral.Size = UDim2.new(0.25, 0, 0.9, 0) -- 25% da largura do painel, 90% da altura (resto para título)
+menuLateral.Position = UDim2.new(0, 0, 0.1, 0) -- Abaixo do título
 menuLateral.BackgroundColor3 = CORES.Secundaria
 menuLateral.BorderSizePixel = 0
 menuLateral.Parent = painel
@@ -347,16 +380,19 @@ menuLayout.SortOrder = Enum.SortOrder.LayoutOrder
 menuLayout.Padding = UDim.new(0, 8) -- Mais espaçamento entre botões
 menuLayout.FillDirection = Enum.FillDirection.Vertical
 menuLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+menuLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+
 
 -- Container de Páginas (onde o conteúdo das abas aparece)
 local pageContainer = Instance.new("Frame")
-pageContainer.Size = UDim2.new(1, -135, 1, -65) -- Largura total menos menu lateral, altura total menos título
-pageContainer.Position = UDim2.new(0, 135, 0, 60)
+pageContainer.Size = UDim2.new(0.75, 0, 0.9, 0) -- Resto da largura, mesma altura do menu
+pageContainer.Position = UDim2.new(0.25, 0, 0.1, 0)
 pageContainer.BackgroundColor3 = CORES.FundoUI
 pageContainer.BorderSizePixel = 0
 pageContainer.Parent = painel
 pageContainer.ClipsDescendants = true
 pageContainer.CornerRadius = UDim.new(0, 10)
+pageContainer.ZIndex = 6
 
 local activePage = nil
 
@@ -374,6 +410,7 @@ local function createTabPage(name, emoji)
     page.ScrollBarThickness = 8
     page.ClipsDescendants = true
     page.CornerRadius = UDim.new(0, 8)
+    page.ZIndex = 7
 
     local layout = Instance.new("UIListLayout")
     layout.Parent = page
@@ -383,15 +420,16 @@ local function createTabPage(name, emoji)
     layout.VerticalAlignment = Enum.VerticalAlignment.Top
 
     local tabButton = Instance.new("TextButton")
-    tabButton.Size = UDim2.new(1, -16, 0, 45) -- Um pouco mais alto
+    tabButton.Size = UDim2.new(0.9, 0, 0, 45) -- Um pouco mais alto, em offset para tamanho consistente
     tabButton.Text = emoji .. " " .. name
     tabButton.Font = Enum.Font.SourceSansBold
     tabButton.TextColor3 = CORES.TextoClaro
-    tabButton.TextSize = 22
+    tabButton.TextSize = 20
     tabButton.BackgroundColor3 = CORES.FundoComponente
     tabButton.Parent = menuLateral
     tabButton.LayoutOrder = #menuLateral:GetChildren() -- Garante a ordem
     tabButton.CornerRadius = UDim.new(0, 8)
+    tabButton.ZIndex = 7
 
     tabButton.MouseButton1Click:Connect(function()
         if activePage then
@@ -424,10 +462,11 @@ funcoesBtn.MouseButton1Click:Fire() -- Simula um clique para abrir a primeira ab
 -- Função para criar botões de toggle estilizados
 local function criarBotaoToggle(nome, parent, emoji)
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0.9, 0, 0, 55) -- Mais alto
+    frame.Size = UDim2.new(0.9, 0, 0, 55) -- Mais alto, largura em escala
     frame.BackgroundTransparency = 1
     frame.Parent = parent
     frame.Name = nome .. "ToggleFrame"
+    frame.ZIndex = 8
 
     local btnAtivar = Instance.new("TextButton")
     btnAtivar.Size = UDim2.new(0.7, 0, 1, 0)
@@ -435,23 +474,25 @@ local function criarBotaoToggle(nome, parent, emoji)
     btnAtivar.Text = emoji .. " " .. nome
     btnAtivar.Font = Enum.Font.SourceSansBold
     btnAtivar.TextColor3 = CORES.TextoClaro
-    btnAtivar.TextSize = 24 -- Texto maior
+    btnAtivar.TextSize = 20 -- Texto maior
     btnAtivar.BackgroundColor3 = CORES.FundoComponente
     btnAtivar.Name = "btnFunc"
     btnAtivar.Parent = frame
     btnAtivar.CornerRadius = UDim.new(0, 10)
+    btnAtivar.ZIndex = 9
 
     local btnToggle = Instance.new("TextButton")
-    btnToggle.Size = UDim2.new(0.3, -5, 0.8, 0)
-    btnToggle.Position = UDim2.new(0.7, 5, 0.1, 0)
+    btnToggle.Size = UDim2.new(0.28, 0, 0.8, 0) -- Ajustado para proporção
+    btnToggle.Position = UDim2.new(0.72, 0, 0.1, 0)
     btnToggle.Text = "OFF 🔴"
     btnToggle.Font = Enum.Font.SourceSansBold
     btnToggle.TextColor3 = CORES.TextoClaro
-    btnToggle.TextSize = 22 -- Texto maior
+    btnToggle.TextSize = 18 -- Ajustado
     btnToggle.BackgroundColor3 = CORES.ToggleOFF
     btnToggle.Name = "btnToggle"
     btnToggle.Parent = frame
     btnToggle.CornerRadius = UDim.new(0, 8)
+    btnToggle.ZIndex = 9
 
     return frame, btnAtivar, btnToggle
 end
@@ -601,36 +642,40 @@ local killPlayerFrame = Instance.new("Frame")
 killPlayerFrame.Size = UDim2.new(0.9, 0, 0, 95)
 killPlayerFrame.BackgroundTransparency = 1
 killPlayerFrame.Parent = funcoesPage
+killPlayerFrame.ZIndex = 8
 
 local killPlayerLabel = Instance.new("TextLabel")
-killPlayerLabel.Size = UDim2.new(1, 0, 0, 30)
+killPlayerLabel.Size = UDim2.new(1, 0, 0.3, 0) -- 30% da altura do frame
 killPlayerLabel.Text = "🔫 Matar Player por Nome:"
 killPlayerLabel.TextColor3 = CORES.TextoClaro
 killPlayerLabel.BackgroundTransparency = 1
 killPlayerLabel.Font = Enum.Font.SourceSansBold
-killPlayerLabel.TextSize = 22
+killPlayerLabel.TextSize = 20
 killPlayerLabel.Parent = killPlayerFrame
+killPlayerLabel.ZIndex = 9
 
 local playerNameBox = Instance.new("TextBox")
-playerNameBox.Size = UDim2.new(0.7, 0, 0, 40)
+playerNameBox.Size = UDim2.new(0.68, 0, 0.45, 0) -- Largura ajustada
 playerNameBox.Position = UDim2.new(0, 0, 0.4, 0)
 playerNameBox.PlaceholderText = "Digite o nome do alvo..."
 playerNameBox.BackgroundColor3 = CORES.FundoComponente
 playerNameBox.TextColor3 = CORES.TextoClaro
 playerNameBox.Font = Enum.Font.SourceSans
-playerNameBox.TextSize = 20
+playerNameBox.TextSize = 18
 playerNameBox.Parent = killPlayerFrame
 playerNameBox.CornerRadius = UDim.new(0, 8)
+playerNameBox.ZIndex = 9
 
 local killButton = Instance.new("TextButton")
-killButton.Size = UDim2.new(0.28, 0, 0, 40)
-killButton.Position = UDim2.new(0.72, 0, 0.4, 0)
+killButton.Size = UDim2.new(0.3, 0, 0.45, 0) -- Largura ajustada
+killButton.Position = UDim2.new(0.7, 0, 0.4, 0)
 killButton.Text = "💥 KILL"
 killButton.Font = Enum.Font.SourceSansBold
 killButton.TextColor3 = CORES.TextoClaro
 killButton.BackgroundColor3 = CORES.Primaria
 killButton.Parent = killPlayerFrame
 killButton.CornerRadius = UDim.new(0, 8)
+killButton.ZIndex = 9
 
 killButton.MouseButton1Click:Connect(function()
     local targetName = playerNameBox.Text
@@ -663,24 +708,27 @@ teleporteLabel.Text = "📍 Teleportes Ultra Secretos:"
 teleporteLabel.TextColor3 = CORES.TextoClaro
 teleporteLabel.BackgroundTransparency = 1
 teleporteLabel.Font = Enum.Font.SourceSansBold
-teleporteLabel.TextSize = 22
+teleporteLabel.TextSize = 20
 teleporteLabel.Parent = teleportesPage
+teleporteLabel.ZIndex = 8
 
 local teleporteDropdown = Instance.new("Frame")
 teleporteDropdown.Size = UDim2.new(0.9, 0, 0, 45) -- Altura inicial do botão
 teleporteDropdown.BackgroundColor3 = CORES.FundoComponente
 teleporteDropdown.Parent = teleportesPage
 teleporteDropdown.CornerRadius = UDim.new(0, 8)
+teleporteDropdown.ZIndex = 8
 
 local dropdownButton = Instance.new("TextButton")
 dropdownButton.Size = UDim2.new(1, 0, 1, 0)
 dropdownButton.BackgroundColor3 = CORES.FundoComponente
 dropdownButton.TextColor3 = CORES.TextoClaro
 dropdownButton.Font = Enum.Font.SourceSans
-dropdownButton.TextSize = 22
+dropdownButton.TextSize = 18
 dropdownButton.TextXAlignment = Enum.TextXAlignment.Left
 dropdownButton.Text = "Selecione um local..."
 dropdownButton.Parent = teleporteDropdown
+dropdownButton.ZIndex = 9
 
 local dropdownArrow = Instance.new("TextLabel")
 dropdownArrow.Size = UDim2.new(0, 35, 1, 0)
@@ -692,6 +740,7 @@ dropdownArrow.Font = Enum.Font.SourceSansBold
 dropdownArrow.TextSize = 28
 dropdownArrow.Text = "▼"
 dropdownArrow.Parent = dropdownButton
+dropdownArrow.ZIndex = 10
 
 local dropdownList = Instance.new("Frame")
 dropdownList.Size = UDim2.new(1, 0, 0, 0) -- Altura 0 inicialmente
@@ -700,6 +749,7 @@ dropdownList.BackgroundColor3 = CORES.Secundaria
 dropdownList.Parent = teleporteDropdown
 dropdownList.ClipsDescendants = true
 dropdownList.CornerRadius = UDim.new(0, 8)
+dropdownList.ZIndex = 9 -- Para ficar por cima dos outros elementos
 
 local listLayout = Instance.new("UIListLayout")
 listLayout.Parent = dropdownList
@@ -723,9 +773,10 @@ for i, tele in ipairs(teleportes) do
     teleOption.BackgroundTransparency = 0.5
     teleOption.TextColor3 = CORES.TextoClaro
     teleOption.Font = Enum.Font.SourceSans
-    teleOption.TextSize = 20
+    teleOption.TextSize = 18
     teleOption.Parent = dropdownList
     teleOption.LayoutOrder = i
+    teleOption.ZIndex = 10
 
     teleOption.MouseButton1Click:Connect(function()
         if HumanoidRootPart then
@@ -743,12 +794,13 @@ end
 -- Sistema de Spam Sonoro por Palavra (Modo Troll Extremo) 😈
 local trollLabel = Instance.new("TextLabel")
 trollLabel.Size = UDim2.new(0.9, 0, 0, 30)
-trollLabel.Text = "😈 Modo Troll (Spam Sonoro):"
+trollLabel.Text = "😈 Modo Troll Extremo (Spam Sonoro):"
 trollLabel.TextColor3 = CORES.TextoClaro
 trollLabel.BackgroundTransparency = 1
 trollLabel.Font = Enum.Font.SourceSansBold
-trollLabel.TextSize = 22
+trollLabel.TextSize = 20
 trollLabel.Parent = trollPage
+trollLabel.ZIndex = 8
 
 local soundTextBox = Instance.new("TextBox")
 soundTextBox.Size = UDim2.new(0.9, 0, 0, 40)
@@ -756,9 +808,10 @@ soundTextBox.PlaceholderText = "Digite 'gemidao', 'susto', 'aplausos', 'alerta'.
 soundTextBox.BackgroundColor3 = CORES.FundoComponente
 soundTextBox.TextColor3 = CORES.TextoClaro
 soundTextBox.Font = Enum.Font.SourceSans
-soundTextBox.TextSize = 20
+soundTextBox.TextSize = 18
 soundTextBox.Parent = trollPage
 soundTextBox.CornerRadius = UDim.new(0, 8)
+soundTextBox.ZIndex = 9
 
 local spamSoundButton = Instance.new("TextButton")
 spamSoundButton.Size = UDim2.new(0.45, 0, 0, 45)
@@ -769,6 +822,7 @@ spamSoundButton.TextColor3 = CORES.TextoClaro
 spamSoundButton.BackgroundColor3 = CORES.Primaria
 spamSoundButton.Parent = trollPage
 spamSoundButton.CornerRadius = UDim.new(0, 10)
+spamSoundButton.ZIndex = 9
 
 local stopSoundButton = Instance.new("TextButton")
 stopSoundButton.Size = UDim2.new(0.45, 0, 0, 45)
@@ -779,6 +833,7 @@ stopSoundButton.TextColor3 = CORES.TextoClaro
 stopSoundButton.BackgroundColor3 = CORES.Erro
 stopSoundButton.Parent = trollPage
 stopSoundButton.CornerRadius = UDim.new(0, 10)
+stopSoundButton.ZIndex = 9
 
 local currentSoundSpam = nil
 local spamming = false
@@ -820,8 +875,9 @@ hotkeyLabel.Text = "⌨️ Hotkeys Personalizadas:"
 hotkeyLabel.TextColor3 = CORES.TextoClaro
 hotkeyLabel.BackgroundTransparency = 1
 hotkeyLabel.Font = Enum.Font.SourceSansBold
-hotkeyLabel.TextSize = 22
+hotkeyLabel.TextSize = 20
 hotkeyLabel.Parent = hotkeysPage
+hotkeyLabel.ZIndex = 8
 
 local hotkeyEntries = {}
 
@@ -830,6 +886,7 @@ local function createHotkeyEntry(funcName, display, parent)
     frame.Size = UDim2.new(0.9, 0, 0, 50)
     frame.BackgroundTransparency = 1
     frame.Parent = parent
+    frame.ZIndex = 9
 
     local funcLabel = Instance.new("TextLabel")
     funcLabel.Size = UDim2.new(0.5, 0, 1, 0)
@@ -837,9 +894,10 @@ local function createHotkeyEntry(funcName, display, parent)
     funcLabel.TextColor3 = CORES.TextoClaro
     funcLabel.BackgroundTransparency = 1
     funcLabel.Font = Enum.Font.SourceSans
-    funcLabel.TextSize = 20
+    funcLabel.TextSize = 18
     funcLabel.TextXAlignment = Enum.TextXAlignment.Left
     funcLabel.Parent = frame
+    funcLabel.ZIndex = 10
 
     local keyDisplay = Instance.new("TextBox")
     keyDisplay.Size = UDim2.new(0.4, 0, 1, 0)
@@ -849,9 +907,10 @@ local function createHotkeyEntry(funcName, display, parent)
     keyDisplay.BackgroundColor3 = CORES.FundoComponente
     keyDisplay.TextColor3 = CORES.TextoClaro
     keyDisplay.Font = Enum.Font.SourceSansBold
-    keyDisplay.TextSize = 20
+    keyDisplay.TextSize = 18
     keyDisplay.Parent = frame
     keyDisplay.CornerRadius = UDim.new(0, 8)
+    keyDisplay.ZIndex = 10
 
     keyDisplay.Focused:Connect(function()
         keyDisplay.Text = "Aguardando..."
@@ -892,18 +951,20 @@ end)
 
 -- Desenho "HUNSFUCK" no Painel (Visual) 🎨
 local hunsfuckArt = Instance.new("TextLabel")
-hunsfuckArt.Size = UDim2.new(0.8, 0, 0, 80)
+hunsfuckArt.Size = UDim2.new(0.8, 0, 0.15, 0) -- Ajustado para % da altura do painel
 hunsfuckArt.Position = UDim2.new(0.1, 0, 0.8, 0) -- Posição no final do painel
 hunsfuckArt.BackgroundColor3 = Color3.new(1,1,1)
 hunsfuckArt.BackgroundTransparency = 1
 hunsfuckArt.TextColor3 = CORES.Primaria
 hunsfuckArt.Font = Enum.Font.SciFi
-hunsfuckArt.TextSize = 50
+hunsfuckArt.TextSize = 40 -- Ajustado para mobile
 hunsfuckArt.TextWrapped = true
-hunsfuckArt.Text = "HUNSFUCK\nULTRA ALPHA"
+hunsfuckArt.Text = "HUNSFUCK"
 hunsfuckArt.TextStrokeTransparency = 0 -- Borda no texto
 hunsfuckArt.TextStrokeColor3 = CORES.Secundaria
 hunsfuckArt.Parent = painel
+hunsfuckArt.ZIndex = 6
+
 
 -- Sistema de Hotkeys Global
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
@@ -930,7 +991,7 @@ end)
 botaoConfirmar.MouseButton1Click:Connect(function()
     if caixaKey.Text == keyCorreta then
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-        local goal = {Position = UDim2.new(0.5, -200, -1, 0), BackgroundTransparency = 1} -- Move para cima e desaparece
+        local goal = {Position = UDim2.new(0.5, 0, -0.5, 0), BackgroundTransparency = 1} -- Move para cima e desaparece
         
         local tweenKeyFrame = TweenService:Create(keyFrame, tweenInfo, goal)
         
@@ -949,9 +1010,10 @@ botaoConfirmar.MouseButton1Click:Connect(function()
         floatingButton.Visible = true
         if not settings.stealthMode then
              painel.Visible = true
+             painel.BackgroundTransparency = 0 -- Garante que o painel não comece transparente
              panelIsVisible = true -- Seta o estado do painel como visível
              floatingButton.Text = "❌" -- Ajusta o ícone do botão flutuante
-             showNotification("🎉 Acesso LIBERADO! Bem-vindo ao HUNSFUCK V5 ALPHA!", CORES.Sucesso, 5)
+             showNotification("🎉 Acesso LIBERADO! Bem-vindo ao HUNSFUCK!", CORES.Sucesso, 5)
         else
             showNotification("🎉 Acesso LIBERADO! HUNSFUCK está em modo Stealth. Use Hotkeys!", CORES.Sucesso, 5)
             floatingButton.Visible = false -- Mantém o botão flutuante invisível no modo stealth
