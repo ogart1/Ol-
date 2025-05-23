@@ -1,10 +1,21 @@
---// HUNSFUCK: O SCRIPT DEFINITIVO COM UI REVOLUCIONÁRIA by ogart
---// Otimizado para Mobile & Totalmente Carregado com Animações e Estilo
---// Revisado para maior compatibilidade e estabilidade em executores como o Delta
+-- HUNSFUCK - O Script Definitivo 😈
+-- Desenvolvido com carinho (e muita perdição) por ogart, a lenda!
+-- Este script oferece uma interface completa para manipulação de gameplay no Roblox.
 
-local keyCorreta = "byogart" -- 🔑 A chave para o poder!
+-- // Variáveis e Serviços Globais \\ --
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart", 10)
+local Humanoid = Character:WaitForChild("Humanoid", 10)
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local CollectionService = game:GetService("CollectionService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local HttpService = game:GetService("HttpService")
+local Debris = game:GetService("Debris")
 
--- Cores Premium e Design Sofisticado (Temas)
+-- // Cores Premium e Design Sofisticado \\ --
 local TEMAS = {
     ["Vermelho Sangue"] = {
         Primaria = Color3.fromRGB(180, 0, 0),
@@ -49,30 +60,17 @@ local TEMAS = {
         SliderFill = Color3.fromRGB(50, 200, 50)
     }
 }
-local CORES = TEMAS["Vermelho Sangue"] -- Tema inicial padrão
+local CORES = TEMAS["Vermelho Sangue"] -- Tema inicial padrão (será carregado das settings)
 
--- Áudios do TROLL EXTREMO (IDs de áudio públicos do Roblox)
+-- // Áudios do TROLL EXTREMO \\ --
 local AUDIO_IDS = {
-    gemidao = 5580009623, -- Exemplo de ID de áudio (substitua por um real se necessário)
-    susto = 131976071,     -- Exemplo de ID de áudio
-    aplausos = 143521366,  -- Exemplo de ID de áudio
-    alerta = 139194218     -- Exemplo de ID de áudio
+    gemidao = 5580009623,
+    susto = 131976071,
+    aplausos = 143521366,
+    alerta = 139194218
 }
 
--- Variáveis globais de serviços
-local Player = game.Players.LocalPlayer
-local Character = Player.Character or Player.CharacterAdded:Wait()
-local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart", 10)
-local Humanoid = Character:WaitForChild("Humanoid", 10)
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
-local CollectionService = game:GetService("CollectionService")
-local VirtualInputManager = game:GetService("VirtualInputManager") -- Para anti-AFK
-local HttpService = game:GetService("HttpService") -- Para JSON
-local Debris = game:GetService("Debris")
-
--- Salvamento de Configurações Persistentes
+-- // Variáveis e Funções de Salvamento de Configurações \\ --
 local settings = {}
 local configFileName = "Hunsfuck_Config.json"
 
@@ -100,7 +98,6 @@ local function loadSettings()
         for k, v in pairs(decoded) do
             settings[k] = v
         end
-        -- Converter cores salvas (se aplicável)
         if settings.tema then
             CORES = TEMAS[settings.tema] or TEMAS["Vermelho Sangue"]
         end
@@ -116,8 +113,8 @@ local function loadSettings()
         settings.espBoxes = false
         settings.espTracers = false
         settings.antiAFK = false
-        settings.tema = "Vermelho Sangue" -- Default theme
-        settings.guiPos = UDim2.new(0.5, 0, 0.5, 0) -- Posição padrão centralizada
+        settings.tema = "Vermelho Sangue"
+        settings.guiPos = UDim2.new(0.5, 0, 0.5, 0) -- Posição inicial centralizada
         settings.hotkeys = {
             fly = Enum.KeyCode.F,
             noclip = Enum.KeyCode.G,
@@ -132,7 +129,7 @@ local function loadSettings()
 end
 loadSettings() -- Carrega as configs no início do script
 
--- Notificações visuais animadas
+-- // Notificações Visuais Animadas \\ --
 local function showNotification(text, color, duration)
     -- Remove notificações antigas para evitar acúmulo
     for _, notif in pairs(game.CoreGui:GetChildren()) do
@@ -152,7 +149,10 @@ local function showNotification(text, color, duration)
     NotificationFrame.ZIndex = 999
     NotificationFrame.ClipsDescendants = true
     NotificationFrame.Name = "HunsfuckNotification"
-    NotificationFrame.CornerRadius = UDim.new(0, 8)
+    
+    local notifCorner = Instance.new("UICorner")
+    notifCorner.CornerRadius = UDim.new(0, 8)
+    notifCorner.Parent = NotificationFrame
 
     local uiStroke = Instance.new("UIStroke")
     uiStroke.Color = Color3.fromRGB(0,0,0)
@@ -195,114 +195,36 @@ local function showNotification(text, color, duration)
     NotificationFrame:Destroy()
 end
 
--- UI PRINCIPAL 💎
+-- // UI PRINCIPAL \\ --
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "HUNSFUCK_UI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.CoreGui
 ScreenGui.Enabled = true
 
+-- Adiciona UIScale para responsividade global
 local uiScale = Instance.new("UIScale")
 uiScale.Scale = 0.9 -- Ajusta a escala da UI para telas menores
 uiScale.Parent = ScreenGui
 
--- Key Frame 🔑 (ZIndex aumentado para garantir visibilidade)
-local keyFrame = Instance.new("Frame")
-keyFrame.Size = UDim2.new(0.7, 0, 0.45, 0)
-keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-keyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-keyFrame.BackgroundColor3 = CORES.FundoUI
-keyFrame.BorderSizePixel = 0
-keyFrame.Parent = ScreenGui
-keyFrame.ClipsDescendants = true
-keyFrame.Visible = true
-keyFrame.CornerRadius = UDim.new(0, 12)
-keyFrame.ZIndex = 100 -- ZIndex muito alto para garantir que apareça
-
-local keyFrameAspectRatio = Instance.new("UIAspectRatioConstraint")
-keyFrameAspectRatio.AspectRatio = 400 / 220
-keyFrameAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
-keyFrameAspectRatio.DominantAxis = Enum.DominantAxis.Width
-keyFrameAspectRatio.Parent = keyFrame
-
-local uiStrokeKey = Instance.new("UIStroke")
-uiStrokeKey.Color = CORES.BordaClara
-uiStrokeKey.Transparency = 0.8
-uiStrokeKey.Thickness = 1
-uiStrokeKey.Parent = keyFrame
-uiStrokeKey.ZIndex = 101 -- Maior que a keyFrame
-
-local tituloKey = Instance.new("TextLabel")
-tituloKey.Size = UDim2.new(1, 0, 0.3, 0)
-tituloKey.Position = UDim2.new(0, 0, 0, 0)
-tituloKey.BackgroundColor3 = CORES.Primaria
-tituloKey.TextColor3 = CORES.TextoClaro
-tituloKey.Font = Enum.Font.SourceSansBold
-tituloKey.TextSize = 30
-tituloKey.Text = "💀 HUNSFUCK 💀"
-tituloKey.Parent = keyFrame
-tituloKey.ZIndex = 101 -- Maior que a keyFrame
-
--- REMOVIDO: Gradiente no título da keyFrame para maior compatibilidade
-
-local caixaKey = Instance.new("TextBox")
-caixaKey.Size = UDim2.new(0.85, 0, 0.18, 0)
-caixaKey.Position = UDim2.new(0.075, 0, 0.45, 0)
-caixaKey.PlaceholderText = "🔑 Digite a chave secreta..."
-caixaKey.Text = ""
-caixaKey.BackgroundColor3 = CORES.FundoComponente
-caixaKey.TextColor3 = CORES.TextoClaro
-caixaKey.Font = Enum.Font.SourceSans
-caixaKey.TextSize = 20
-caixaKey.BorderSizePixel = 0
-caixaKey.Parent = keyFrame
-caixaKey.CornerRadius = UDim.new(0, 6)
-caixaKey.ZIndex = 101 -- Maior que a keyFrame
-
-local botaoConfirmar = Instance.new("TextButton")
-botaoConfirmar.Size = UDim2.new(0.65, 0, 0.22, 0)
-botaoConfirmar.Position = UDim2.new(0.175, 0, 0.75, 0)
-botaoConfirmar.Text = "🚀 Confirmar Acesso 🚀"
-botaoConfirmar.Font = Enum.Font.SourceSansBold
-botaoConfirmar.TextColor3 = CORES.TextoClaro
-botaoConfirmar.BackgroundColor3 = CORES.Sucesso
-botaoConfirmar.BorderSizePixel = 0
-botaoConfirmar.Parent = keyFrame
-botaoConfirmar.CornerRadius = UDim.new(0, 10)
-botaoConfirmar.ZIndex = 101 -- Maior que a keyFrame
-
--- Animação de Hover/Click para botaoConfirmar
-botaoConfirmar.MouseEnter:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
-botaoConfirmar.MouseLeave:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play() end)
-botaoConfirmar.MouseButton1Down:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.05), {Size = UDim2.new(0.63, 0, 0.20, 0)}):Play() end)
-botaoConfirmar.MouseButton1Up:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {Size = UDim2.new(0.65, 0, 0.22, 0)}):Play() end)
-
-local creditosKey = Instance.new("TextLabel")
-creditosKey.Size = UDim2.new(1, 0, 0.1, 0)
-creditosKey.Position = UDim2.new(0, 0, 0.9, 0)
-creditosKey.Text = "✨ Créditos: ogart - A Lenda! ✨"
-creditosKey.TextColor3 = CORES.Sucesso
-creditosKey.BackgroundTransparency = 1
-creditosKey.Font = Enum.Font.SourceSansItalic
-creditosKey.TextSize = 18
-creditosKey.Parent = keyFrame
-creditosKey.ZIndex = 101 -- Maior que a keyFrame
-
--- Painel Principal HUNSFUCK 🚀
+-- Painel Principal HUNSFUCK
 local painel = Instance.new("Frame")
-painel.Size = UDim2.new(0.9, 0, 0.8, 0)
+painel.Size = UDim2.new(0.9, 0, 0.8, 0) -- Tamanho inicial
 painel.Position = settings.guiPos -- Carrega posição salva
 painel.AnchorPoint = Vector2.new(0.5, 0.5)
 painel.BackgroundColor3 = CORES.FundoUI
 painel.BorderSizePixel = 0
-painel.Visible = false
+painel.Visible = false -- Começa invisível, será ativado após a chave
 painel.Parent = ScreenGui
 painel.ClipsDescendants = true
-painel.CornerRadius = UDim.new(0, 15)
-painel.ZIndex = 5 -- ZIndex padrão para o painel principal
+painel.ZIndex = 100 -- ZIndex alto para garantir visibilidade
+
+local uiCornerPainel = Instance.new("UICorner")
+uiCornerPainel.CornerRadius = UDim.new(0, 15)
+uiCornerPainel.Parent = painel
 
 local painelAspectRatio = Instance.new("UIAspectRatioConstraint")
-painelAspectRatio.AspectRatio = 550 / 550
+painelAspectRatio.AspectRatio = 550 / 550 -- Proporção para manter a forma
 painelAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
 painelAspectRatio.DominantAxis = Enum.DominantAxis.Height
 painelAspectRatio.Parent = painel
@@ -322,11 +244,9 @@ tituloPainel.Font = Enum.Font.SourceSansBold
 tituloPainel.TextSize = 28
 tituloPainel.Text = "💀 HUNSFUCK 💀"
 tituloPainel.Parent = painel
-tituloPainel.ZIndex = 6
+tituloPainel.ZIndex = 101
 
--- REMOVIDO: Gradiente no título do painel para maior compatibilidade
-
--- Drag & Drop
+-- Drag & Drop do Painel
 local dragging = false
 local dragStart = nil
 local initialPos = nil
@@ -370,7 +290,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Botão minimizar/maximizar (dentro do painel)
+-- Botão minimizar/maximizar
 local minimizarBtn = Instance.new("TextButton")
 minimizarBtn.Size = UDim2.new(0, 45, 0, 45)
 minimizarBtn.Position = UDim2.new(1, -50, 0, 7)
@@ -380,8 +300,11 @@ minimizarBtn.TextColor3 = CORES.TextoClaro
 minimizarBtn.Font = Enum.Font.SourceSansBold
 minimizarBtn.TextSize = 30
 minimizarBtn.Parent = painel
-minimizarBtn.CornerRadius = UDim.new(0, 6)
-minimizarBtn.ZIndex = 7
+minimizarBtn.ZIndex = 102
+
+local uiCornerMinimizarBtn = Instance.new("UICorner")
+uiCornerMinimizarBtn.CornerRadius = UDim.new(0, 6)
+uiCornerMinimizarBtn.Parent = minimizarBtn
 
 -- Animação de Hover/Click para minimizarBtn
 minimizarBtn.MouseEnter:Connect(function() TweenService:Create(minimizarBtn, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -412,85 +335,20 @@ minimizarBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Botão Flutuante (Floating Button) 🌀
-local floatingButton = Instance.new("TextButton")
-floatingButton.Name = "FloatingButton"
-floatingButton.Size = UDim2.new(0, 60, 0, 60)
-floatingButton.Position = UDim2.new(0.5, 0, 0.95, 0)
-floatingButton.AnchorPoint = Vector2.new(0.5, 0.5)
-floatingButton.BackgroundColor3 = CORES.Primaria
-floatingButton.TextColor3 = CORES.TextoClaro
-floatingButton.Font = Enum.Font.SourceSansBold
-floatingButton.TextSize = 36
-floatingButton.Text = "💡"
-floatingButton.Parent = ScreenGui
-floatingButton.CornerRadius = UDim.new(0.5, 0)
-floatingButton.Visible = true
-floatingButton.ZIndex = 8
 
-local uiStrokeFloating = Instance.new("UIStroke")
-uiStrokeFloating.Color = CORES.FundoComponente
-uiStrokeFloating.Transparency = 0.2
-uiStrokeFloating.Thickness = 2
-uiStrokeFloating.Parent = floatingButton
-
--- Animação de Hover/Click para floatingButton
-floatingButton.MouseEnter:Connect(function() TweenService:Create(floatingButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
-floatingButton.MouseLeave:Connect(function() TweenService:Create(floatingButton, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play() end)
-floatingButton.MouseButton1Down:Connect(function() TweenService:Create(floatingButton, TweenInfo.new(0.05), {Size = UDim2.new(0, 58, 0, 58)}):Play() end)
-floatingButton.MouseButton1Up:Connect(function() TweenService:Create(floatingButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 60, 0, 60)}):Play() end)
-
-
-local panelIsVisible = false
-
-floatingButton.MouseButton1Click:Connect(function()
-    panelIsVisible = not panelIsVisible
-    
-    if panelIsVisible then
-        painel.Visible = true
-        painel.BackgroundTransparency = 1
-        
-        local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-        TweenService:Create(painel, tweenInfo, {BackgroundTransparency = 0}):Play()
-        task.wait(0.05)
-        for _, v in pairs(painel:GetChildren()) do
-            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") or v:IsA("UIStroke") then
-                if v ~= tituloPainel and v ~= minimizarBtn then -- Título e minimizar são visíveis mesmo quando minimizado
-                    TweenService:Create(v, tweenInfo, {BackgroundTransparency = (v.BackgroundTransparency == 1 and 1 or 0), TextTransparency = 0, Transparency = 0}):Play()
-                end
-            end
-        end
-        floatingButton.Text = "❌"
-        showNotification("Painel ABERTO! 👁️", CORES.Sucesso, 2)
-    else
-        local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-        for _, v in pairs(painel:GetChildren()) do
-            if v:IsA("Frame") or v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("ScrollingFrame") or v:IsA("TextLabel") or v:IsA("UIStroke") then
-                if v ~= tituloPainel and v ~= minimizarBtn then -- Título e minimizar não somem
-                    TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1, TextTransparency = 1, Transparency = 1}):Play()
-                end
-            end
-        end
-        
-        task.wait(0.2)
-        TweenService:Create(painel, tweenInfo, {BackgroundTransparency = 1}):Play()
-        
-        task.wait(0.3)
-        painel.Visible = false
-        floatingButton.Text = "💡"
-        showNotification("Painel FECHADO! 🚫", CORES.Erro, 2)
-    end
-end)
-
-
--- Menu Lateral (Abas) 📁
+-- Menu Lateral (Abas)
 local menuLateral = Instance.new("Frame")
 menuLateral.Size = UDim2.new(0.25, 0, 0.9, 0)
 menuLateral.Position = UDim2.new(0, 0, 0.1, 0)
 menuLateral.BackgroundColor3 = CORES.Secundaria
 menuLateral.BorderSizePixel = 0
 menuLateral.Parent = painel
-menuLateral.CornerRadius = UDim.new(0, 8)
+menuLateral.ZIndex = 101 -- ZIndex para aparecer sobre o painel principal
+
+local uiCornerMenuLateral = Instance.new("UICorner")
+uiCornerMenuLateral.CornerRadius = UDim.new(0, 8)
+uiCornerMenuLateral.Parent = menuLateral
+
 local menuLayout = Instance.new("UIListLayout")
 menuLayout.Parent = menuLateral
 menuLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -508,8 +366,11 @@ pageContainer.BackgroundColor3 = CORES.FundoUI
 pageContainer.BorderSizePixel = 0
 pageContainer.Parent = painel
 pageContainer.ClipsDescendants = true
-pageContainer.CornerRadius = UDim.new(0, 10)
-pageContainer.ZIndex = 6
+pageContainer.ZIndex = 101 -- ZIndex para aparecer sobre o painel principal
+
+local uiCornerPageContainer = Instance.new("UICorner")
+uiCornerPageContainer.CornerRadius = UDim.new(0, 10)
+uiCornerPageContainer.Parent = pageContainer
 
 local activePage = nil
 
@@ -526,9 +387,11 @@ local function createTabPage(name, emoji)
     page.CanvasSize = UDim2.new(0, 0, 0, 0)
     page.ScrollBarThickness = 8
     page.ClipsDescendants = true
-    page.CornerRadius = UDim.new(0, 8)
-    page.ZIndex = 7
-    page.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+    page.ZIndex = 102 -- ZIndex para o conteúdo da página
+
+    local uiCornerPage = Instance.new("UICorner")
+    uiCornerPage.CornerRadius = UDim.new(0, 8)
+    uiCornerPage.Parent = page
 
     local layout = Instance.new("UIListLayout")
     layout.Parent = page
@@ -546,15 +409,17 @@ local function createTabPage(name, emoji)
     tabButton.BackgroundColor3 = CORES.FundoComponente
     tabButton.Parent = menuLateral
     tabButton.LayoutOrder = #menuLateral:GetChildren()
-    tabButton.CornerRadius = UDim.new(0, 8)
-    tabButton.ZIndex = 7
+    tabButton.ZIndex = 102
+
+    local uiCornerTabButton = Instance.new("UICorner")
+    uiCornerTabButton.CornerRadius = UDim.new(0, 8)
+    uiCornerTabButton.Parent = tabButton
 
     -- Animações de Hover/Click para botões de aba
     tabButton.MouseEnter:Connect(function() TweenService:Create(tabButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
     tabButton.MouseLeave:Connect(function() TweenService:Create(tabButton, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play() end)
     tabButton.MouseButton1Down:Connect(function() TweenService:Create(tabButton, TweenInfo.new(0.05), {Size = UDim2.new(0.88, 0, 0, 43)}):Play() end)
     tabButton.MouseButton1Up:Connect(function() TweenService:Create(tabButton, TweenInfo.new(0.1), {Size = UDim2.new(0.9, 0, 0, 45)}):Play() end)
-
 
     tabButton.MouseButton1Click:Connect(function()
         if activePage then
@@ -578,7 +443,7 @@ local funcoesPage, funcoesBtn = createTabPage("Funções", "⚙️")
 local teleportesPage, teleportesBtn = createTabPage("Teleportes", "📍")
 local trollPage, trollBtn = createTabPage("Troll", "😈")
 local hotkeysPage, hotkeysBtn = createTabPage("Hotkeys", "⌨️")
-local espPage, espBtn = createTabPage("ESP", "👁️‍🗨️") -- Nova aba
+local espPage, espBtn = createTabPage("ESP", "👁️‍🗨️")
 local configPage, configBtn = createTabPage("Config", "🛠️")
 
 -- Ativar a primeira aba por padrão
@@ -588,26 +453,16 @@ funcoesBtn.MouseButton1Click:Fire()
 local function applyTheme(themeColors)
     CORES = themeColors
     -- Atualiza cores de elementos existentes
-    keyFrame.BackgroundColor3 = CORES.FundoUI
-    tituloKey.BackgroundColor3 = CORES.Primaria
-    caixaKey.BackgroundColor3 = CORES.FundoComponente
-    caixaKey.TextColor3 = CORES.TextoClaro
-    botaoConfirmar.BackgroundColor3 = CORES.Sucesso
-    creditosKey.TextColor3 = CORES.Sucesso
-
     painel.BackgroundColor3 = CORES.FundoUI
     tituloPainel.BackgroundColor3 = CORES.Primaria
     minimizarBtn.BackgroundColor3 = CORES.Secundaria
-    floatingButton.BackgroundColor3 = CORES.Primaria
     menuLateral.BackgroundColor3 = CORES.Secundaria
     pageContainer.BackgroundColor3 = CORES.FundoUI
-    hunsfuckArt.TextColor3 = CORES.Primaria
-    hunsfuckArt.TextStrokeColor3 = CORES.Secundaria
-
+    
     -- Atualizar botões de abas
     for _, btn in pairs(menuLateral:GetChildren()) do
         if btn:IsA("TextButton") then
-            if btn == activePage then -- ou o activePage (botão da aba ativa)
+            if btn == activePage then
                 btn.BackgroundColor3 = CORES.Primaria
             else
                 btn.BackgroundColor3 = CORES.FundoComponente
@@ -644,12 +499,10 @@ local function applyTheme(themeColors)
         end
     end
     -- Update strokes
-    uiStrokeKey.Color = CORES.BordaClara
     uiStrokePainel.Color = CORES.BordaClara
-    uiStrokeFloating.Color = CORES.FundoComponente
 end
 
--- Função para criar botões de toggle estilizados (com animação de bolinha)
+-- Função para criar botões de toggle estilizados
 local function criarBotaoToggle(nome, parent, emoji)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0.9, 0, 0, 55)
@@ -668,8 +521,11 @@ local function criarBotaoToggle(nome, parent, emoji)
     btnAtivar.BackgroundColor3 = CORES.FundoComponente
     btnAtivar.Name = "btnFunc"
     btnAtivar.Parent = frame
-    btnAtivar.CornerRadius = UDim.new(0, 10)
     btnAtivar.ZIndex = 9
+
+    local uiCornerBtnAtivar = Instance.new("UICorner")
+    uiCornerBtnAtivar.CornerRadius = UDim.new(0, 10)
+    uiCornerBtnAtivar.Parent = btnAtivar
 
     -- Animação de Hover/Click para btnAtivar
     btnAtivar.MouseEnter:Connect(function() TweenService:Create(btnAtivar, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -677,15 +533,17 @@ local function criarBotaoToggle(nome, parent, emoji)
     btnAtivar.MouseButton1Down:Connect(function() TweenService:Create(btnAtivar, TweenInfo.new(0.05), {Size = UDim2.new(0.68, 0, 0.9, 0)}):Play() end)
     btnAtivar.MouseButton1Up:Connect(function() TweenService:Create(btnAtivar, TweenInfo.new(0.1), {Size = UDim2.new(0.7, 0, 1, 0)}):Play() end)
 
-
     local toggleBg = Instance.new("Frame")
     toggleBg.Size = UDim2.new(0.28, 0, 0.8, 0)
     toggleBg.Position = UDim2.new(0.72, 0, 0.1, 0)
     toggleBg.BackgroundColor3 = CORES.ToggleOFF
     toggleBg.Parent = frame
-    toggleBg.CornerRadius = UDim.new(0.5, 0)
     toggleBg.ZIndex = 9
-    toggleBg.Name = "btnToggle" -- Para compatibilidade com updateToggleUI
+    toggleBg.Name = "btnToggle"
+
+    local uiCornerToggleBg = Instance.new("UICorner")
+    uiCornerToggleBg.CornerRadius = UDim.new(0.5, 0)
+    uiCornerToggleBg.Parent = toggleBg
 
     local toggleHandle = Instance.new("Frame")
     toggleHandle.Name = "ToggleHandle"
@@ -693,20 +551,22 @@ local function criarBotaoToggle(nome, parent, emoji)
     toggleHandle.AnchorPoint = Vector2.new(0.5, 0.5)
     toggleHandle.Position = UDim2.new(0, toggleHandle.Size.X.Offset / 2, 0.5, 0)
     toggleHandle.BackgroundColor3 = CORES.Primaria
+    toggleHandle.BorderSizePixel = 0
     toggleHandle.Parent = toggleBg
-    toggleHandle.CornerRadius = UDim.new(0.5, 0)
     toggleHandle.ZIndex = 10
 
-    -- Feedback de clique visual no toggleBg
-    toggleBg.MouseButton1Click:Connect(function()
-        btnAtivar.MouseButton1Click:Fire() -- Dispara o evento do botão principal
-    end)
+    local uiCornerToggleHandle = Instance.new("UICorner")
+    uiCornerToggleHandle.CornerRadius = UDim.new(0.5, 0)
+    uiCornerToggleHandle.Parent = toggleHandle
 
+    toggleBg.MouseButton1Click:Connect(function()
+        btnAtivar.MouseButton1Click:Fire()
+    end)
 
     return frame, btnAtivar, toggleBg, toggleHandle
 end
 
--- Função auxiliar para alternar estados dos toggles UI (com animação de bolinha)
+-- Função auxiliar para alternar estados dos toggles UI
 local function updateToggleUI(toggleBg, toggleHandle, state)
     local targetColor = state and CORES.ToggleON or CORES.ToggleOFF
     local targetPosition = state and UDim2.new(1, -toggleHandle.Size.X.Offset / 2, 0.5, 0) or UDim2.new(0, toggleHandle.Size.X.Offset / 2, 0.5, 0)
@@ -741,8 +601,11 @@ local function criarSlider(nome, parent, minVal, maxVal, initialVal, step, unit)
     sliderBg.BackgroundColor3 = CORES.FundoComponente
     sliderBg.BorderSizePixel = 0
     sliderBg.Parent = frame
-    sliderBg.CornerRadius = UDim.new(0.5, 0)
     sliderBg.ZIndex = 9
+
+    local uiCornerSliderBg = Instance.new("UICorner")
+    uiCornerSliderBg.CornerRadius = UDim.new(0.5, 0)
+    uiCornerSliderBg.Parent = sliderBg
 
     local sliderFill = Instance.new("Frame")
     sliderFill.Name = "SliderFill"
@@ -750,8 +613,11 @@ local function criarSlider(nome, parent, minVal, maxVal, initialVal, step, unit)
     sliderFill.BackgroundColor3 = CORES.SliderFill
     sliderFill.BorderSizePixel = 0
     sliderFill.Parent = sliderBg
-    sliderFill.CornerRadius = UDim.new(0.5, 0)
     sliderFill.ZIndex = 10
+
+    local uiCornerSliderFill = Instance.new("UICorner")
+    uiCornerSliderFill.CornerRadius = UDim.new(0.5, 0)
+    uiCornerSliderFill.Parent = sliderFill
 
     local sliderHandle = Instance.new("Frame")
     sliderHandle.Size = UDim2.new(0, 20, 1.8, 0)
@@ -760,8 +626,11 @@ local function criarSlider(nome, parent, minVal, maxVal, initialVal, step, unit)
     sliderHandle.BorderSizePixel = 0
     sliderHandle.Parent = sliderBg
     sliderHandle.AnchorPoint = Vector2.new(0.5, 0.5)
-    sliderHandle.CornerRadius = UDim.new(0.5, 0)
     sliderHandle.ZIndex = 11
+
+    local uiCornerSliderHandle = Instance.new("UICorner")
+    uiCornerSliderHandle.CornerRadius = UDim.new(0.5, 0)
+    uiCornerSliderHandle.Parent = sliderHandle
 
     local dragging = false
 
@@ -818,7 +687,7 @@ local function criarSlider(nome, parent, minVal, maxVal, initialVal, step, unit)
 end
 
 
--- Estados dos sistemas e suas funções
+-- // Estados dos Sistemas e Suas Funções \\ --
 local bodyGyro, bodyVel
 local flyConnection
 local noclipConnection
@@ -974,7 +843,7 @@ local function toggleAntiAFK(state)
             VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.W, false)
             task.wait(0.1)
             VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.W, false)
-            task.wait(5) -- Faz um pequeno movimento a cada 5 segundos
+            task.wait(5)
         end)
     else
         showNotification("Anti-AFK DESATIVADO!", CORES.Erro)
@@ -1045,8 +914,11 @@ playerNameBox.Font = Enum.Font.SourceSans
 playerNameBox.TextSize = 18
 playerNameBox.BorderSizePixel = 0
 playerNameBox.Parent = killPlayerFrame
-playerNameBox.CornerRadius = UDim.new(0, 8)
 playerNameBox.ZIndex = 9
+
+local uiCornerPlayerNameBox = Instance.new("UICorner")
+uiCornerPlayerNameBox.CornerRadius = UDim.new(0, 8)
+uiCornerPlayerNameBox.Parent = playerNameBox
 
 local killButton = Instance.new("TextButton")
 killButton.Size = UDim2.new(0.3, 0, 0.45, 0)
@@ -1056,8 +928,11 @@ killButton.Font = Enum.Font.SourceSansBold
 killButton.TextColor3 = CORES.TextoClaro
 killButton.BackgroundColor3 = CORES.Primaria
 killButton.Parent = killPlayerFrame
-killButton.CornerRadius = UDim.new(0, 8)
 killButton.ZIndex = 9
+
+local uiCornerKillButton = Instance.new("UICorner")
+uiCornerKillButton.CornerRadius = UDim.new(0, 8)
+uiCornerKillButton.Parent = killButton
 
 -- Animação de Hover/Click para killButton
 killButton.MouseEnter:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1102,8 +977,11 @@ local teleporteDropdown = Instance.new("Frame")
 teleporteDropdown.Size = UDim2.new(0.9, 0, 0, 45)
 teleporteDropdown.BackgroundColor3 = CORES.FundoComponente
 teleporteDropdown.Parent = teleportesPage
-teleporteDropdown.CornerRadius = UDim.new(0, 8)
 teleporteDropdown.ZIndex = 8
+
+local uiCornerTeleporteDropdown = Instance.new("UICorner")
+uiCornerTeleporteDropdown.CornerRadius = UDim.new(0, 8)
+uiCornerTeleporteDropdown.Parent = teleporteDropdown
 
 local dropdownButton = Instance.new("TextButton")
 dropdownButton.Size = UDim2.new(1, 0, 1, 0)
@@ -1134,8 +1012,11 @@ dropdownList.Position = UDim2.new(0, 0, 1, 0)
 dropdownList.BackgroundColor3 = CORES.Secundaria
 dropdownList.Parent = teleporteDropdown
 dropdownList.ClipsDescendants = true
-dropdownList.CornerRadius = UDim.new(0, 8)
 dropdownList.ZIndex = 9
+
+local uiCornerDropdownList = Instance.new("UICorner")
+uiCornerDropdownList.CornerRadius = UDim.new(0, 8)
+uiCornerDropdownList.Parent = dropdownList
 
 local listLayout = Instance.new("UIListLayout")
 listLayout.Parent = dropdownList
@@ -1163,6 +1044,10 @@ for i, tele in ipairs(teleportes) do
     teleOption.Parent = dropdownList
     teleOption.LayoutOrder = i
     teleOption.ZIndex = 10
+
+    local uiCornerTeleOption = Instance.new("UICorner")
+    uiCornerTeleOption.CornerRadius = UDim.new(0, 8)
+    uiCornerTeleOption.Parent = teleOption
 
     -- Animação de Hover/Click para teleOption
     teleOption.MouseEnter:Connect(function() TweenService:Create(teleOption, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1213,7 +1098,7 @@ local function toggleClickTeleport(state)
                 local raycastParams = RaycastParams.new()
                 raycastParams.FilterType = Enum.RaycastFilterType.Exclude
                 raycastParams.FilterDescendantsInstances = {Player.Character}
-                local result = workspace:Raycast(ray.Origin, ray.Direction * 500, raycastParams) -- 500 studs de distância
+                local result = workspace:Raycast(ray.Origin, ray.Direction * 500, raycastParams)
 
                 if result and HumanoidRootPart then
                     HumanoidRootPart.CFrame = CFrame.new(result.Position)
@@ -1262,8 +1147,11 @@ local tpPlayerDropdown = Instance.new("Frame")
 tpPlayerDropdown.Size = UDim2.new(0.9, 0, 0, 45)
 tpPlayerDropdown.BackgroundColor3 = CORES.FundoComponente
 tpPlayerDropdown.Parent = teleportesPage
-tpPlayerDropdown.CornerRadius = UDim.new(0, 8)
 tpPlayerDropdown.ZIndex = 8
+
+local uiCornerTpPlayerDropdown = Instance.new("UICorner")
+uiCornerTpPlayerDropdown.CornerRadius = UDim.new(0, 8)
+uiCornerTpPlayerDropdown.Parent = tpPlayerDropdown
 
 local tpPlayerDropdownButton = Instance.new("TextButton")
 tpPlayerDropdownButton.Size = UDim2.new(1, 0, 1, 0)
@@ -1294,8 +1182,11 @@ tpPlayerDropdownList.Position = UDim2.new(0, 0, 1, 0)
 tpPlayerDropdownList.BackgroundColor3 = CORES.Secundaria
 tpPlayerDropdownList.Parent = tpPlayerDropdown
 tpPlayerDropdownList.ClipsDescendants = true
-tpPlayerDropdownList.CornerRadius = UDim.new(0, 8)
 tpPlayerDropdownList.ZIndex = 9
+
+local uiCornerTpPlayerDropdownList = Instance.new("UICorner")
+uiCornerTpPlayerDropdownList.CornerRadius = UDim.new(0, 8)
+uiCornerTpPlayerDropdownList.Parent = tpPlayerDropdownList
 
 local tpPlayerListLayout = Instance.new("UIListLayout")
 tpPlayerListLayout.Parent = tpPlayerDropdownList
@@ -1325,6 +1216,10 @@ tpPlayerDropdownButton.MouseButton1Click:Connect(function()
             playerOption.LayoutOrder = i
             playerOption.ZIndex = 10
 
+            local uiCornerPlayerOption = Instance.new("UICorner")
+            uiCornerPlayerOption.CornerRadius = UDim.new(0, 8)
+            uiCornerPlayerOption.Parent = playerOption
+
             -- Animação de Hover/Click para playerOption
             playerOption.MouseEnter:Connect(function() TweenService:Create(playerOption, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
             playerOption.MouseLeave:Connect(function() TweenService:Create(playerOption, TweenInfo.new(0.1), {BackgroundTransparency = 0.5}):Play() end)
@@ -1333,10 +1228,10 @@ tpPlayerDropdownButton.MouseButton1Click:Connect(function()
 
             playerOption.MouseButton1Click:Connect(function()
                 if p.Character and p.Character:FindFirstChild("HumanoidRootPart") and HumanoidRootPart then
-                    HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0) -- Teleporta acima do player
+                    HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
                     showNotification("🚀 Teleportado para " .. p.Name .. "!", CORES.Sucesso)
                     tpPlayerDropdownButton.Text = p.Name
-                    tpPlayerDropdownButton.MouseButton1Click:Fire() -- Fecha o dropdown
+                    tpPlayerDropdownButton.MouseButton1Click:Fire()
 
                     -- Efeito visual de teleporte no player
                     local indicator = Instance.new("Part")
@@ -1384,8 +1279,11 @@ soundTextBox.TextColor3 = CORES.TextoClaro
 soundTextBox.Font = Enum.Font.SourceSans
 soundTextBox.TextSize = 18
 soundTextBox.Parent = trollPage
-soundTextBox.CornerRadius = UDim.new(0, 8)
 soundTextBox.ZIndex = 9
+
+local uiCornerSoundTextBox = Instance.new("UICorner")
+uiCornerSoundTextBox.CornerRadius = UDim.new(0, 8)
+uiCornerSoundTextBox.Parent = soundTextBox
 
 local spamSoundButton = Instance.new("TextButton")
 spamSoundButton.Size = UDim2.new(0.45, 0, 0, 45)
@@ -1395,8 +1293,11 @@ spamSoundButton.Font = Enum.Font.SourceSansBold
 spamSoundButton.TextColor3 = CORES.TextoClaro
 spamSoundButton.BackgroundColor3 = CORES.Primaria
 spamSoundButton.Parent = trollPage
-spamSoundButton.CornerRadius = UDim.new(0, 10)
 spamSoundButton.ZIndex = 9
+
+local uiCornerSpamSoundButton = Instance.new("UICorner")
+uiCornerSpamSoundButton.CornerRadius = UDim.new(0, 10)
+uiCornerSpamSoundButton.Parent = spamSoundButton
 
 -- Animação de Hover/Click para spamSoundButton
 spamSoundButton.MouseEnter:Connect(function() TweenService:Create(spamSoundButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1413,8 +1314,11 @@ stopSoundButton.Font = Enum.Font.SourceSansBold
 stopSoundButton.TextColor3 = CORES.TextoClaro
 stopSoundButton.BackgroundColor3 = CORES.Erro
 stopSoundButton.Parent = trollPage
-stopSoundButton.CornerRadius = UDim.new(0, 10)
 stopSoundButton.ZIndex = 9
+
+local uiCornerStopSoundButton = Instance.new("UICorner")
+uiCornerStopSoundButton.CornerRadius = UDim.new(0, 10)
+uiCornerStopSoundButton.Parent = stopSoundButton
 
 -- Animação de Hover/Click para stopSoundButton
 stopSoundButton.MouseEnter:Connect(function() TweenService:Create(stopSoundButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1498,8 +1402,11 @@ local function createHotkeyEntry(funcName, display, parent)
     keyDisplay.TextSize = 18
     keyDisplay.BorderSizePixel = 0
     keyDisplay.Parent = frame
-    keyDisplay.CornerRadius = UDim.new(0, 8)
     keyDisplay.ZIndex = 10
+
+    local uiCornerKeyDisplay = Instance.new("UICorner")
+    uiCornerKeyDisplay.CornerRadius = UDim.new(0, 8)
+    uiCornerKeyDisplay.Parent = keyDisplay
 
     keyDisplay.Focused:Connect(function()
         keyDisplay.Text = "Aguardando..."
@@ -1508,7 +1415,7 @@ local function createHotkeyEntry(funcName, display, parent)
                 settings.hotkeys[funcName] = input.KeyCode
                 keyDisplay.Text = tostring(input.KeyCode)
                 showNotification("Hotkey para '" .. display .. "' definida para " .. tostring(input.KeyCode), CORES.Sucesso)
-                saveSettings() -- Salva hotkey
+                saveSettings()
                 inputConn:Disconnect()
             end
         end)
@@ -1556,7 +1463,7 @@ btnEspBoxes.MouseButton1Click:Connect(function()
     updateToggleUI(toggleEspBoxesBg, toggleEspBoxesHandle, settings.espBoxes)
 end)
 
-local _, btnEspTracers, toggleEspTracersBg, toggleEspTracersHandle = criarBotaoToggle("ESP Tracers", espPage, "📍") -- Usando '📍' para tracer
+local _, btnEspTracers, toggleEspTracersBg, toggleEspTracersHandle = criarBotaoToggle("ESP Tracers", espPage, "📍")
 btnEspTracers.MouseButton1Click:Connect(function()
     toggleESPTracers(not settings.espTracers)
     updateToggleUI(toggleEspTracersBg, toggleEspTracersHandle, settings.espTracers)
@@ -1582,17 +1489,25 @@ espRenderConnection = RunService.RenderStepped:Connect(function()
             box.BorderSizePixel = 1
             box.BorderColor3 = CORES.BordaClara
             box.Parent = ScreenGui
-            box.ZIndex = 99
+            box.ZIndex = 99 -- ZIndex alto para aparecer sobre o jogo
             box.Visible = false
 
+            local uiCornerBox = Instance.new("UICorner")
+            uiCornerBox.CornerRadius = UDim.new(0, 4)
+            uiCornerBox.Parent = box
+
             local tracer = Instance.new("Frame")
-            tracer.Size = UDim2.new(0, 2, 0, 0) -- Ajusta a altura dinamicamente
+            tracer.Size = UDim2.new(0, 2, 0, 0)
             tracer.BackgroundColor3 = CORES.Sucesso
             tracer.BackgroundTransparency = 0.8
             tracer.Parent = ScreenGui
             tracer.ZIndex = 98
             tracer.Visible = false
-            tracer.AnchorPoint = Vector2.new(0.5, 0) -- Origem na parte inferior
+            tracer.AnchorPoint = Vector2.new(0.5, 0)
+
+            local uiCornerTracer = Instance.new("UICorner")
+            uiCornerTracer.CornerRadius = UDim.new(0.5, 0)
+            uiCornerTracer.Parent = tracer
 
             espPlayers[player.UserId] = {Box = box, Tracer = tracer}
         end
@@ -1602,7 +1517,7 @@ espRenderConnection = RunService.RenderStepped:Connect(function()
         local head = char:FindFirstChild("Head") or rootPart
 
         local screenPoint, onScreen = workspace.CurrentCamera:WorldToScreenPoint(rootPart.Position)
-        local headScreenPoint, headOnScreen = workspace.CurrentCamera:WorldToScreenPoint(head.Position + Vector3.new(0, 2, 0)) -- Ponto acima da cabeça
+        local headScreenPoint, headOnScreen = workspace.CurrentCamera:WorldToScreenPoint(head.Position + Vector3.new(0, 2, 0))
 
         if onScreen then
             local box = espPlayers[player.UserId].Box
@@ -1612,7 +1527,7 @@ espRenderConnection = RunService.RenderStepped:Connect(function()
             if settings.espBoxes then
                 box.Visible = true
                 local height = math.abs(screenPoint.Y - headScreenPoint.Y)
-                local width = height * 0.5 -- Proporção de box
+                local width = height * 0.5
                 box.Size = UDim2.new(0, width, 0, height)
                 box.Position = UDim2.new(0, screenPoint.X - width / 2, 0, headScreenPoint.Y)
             else
@@ -1622,13 +1537,9 @@ espRenderConnection = RunService.RenderStepped:Connect(function()
             -- Tracer ESP
             if settings.espTracers then
                 tracer.Visible = true
-                -- Ponto de origem do tracer (geralmente centro da tela ou canto inferior)
                 local originX = UserInputService:GetMouseLocation().X -- Mouse X
                 local originY = UserInputService:GetMouseLocation().Y -- Mouse Y
-                -- Ou centro da tela:
-                -- local originX = workspace.CurrentCamera.ViewportSize.X / 2
-                -- local originY = workspace.CurrentCamera.ViewportSize.Y
-
+                
                 local startPoint = Vector2.new(originX, originY)
                 local endPoint = Vector2.new(screenPoint.X, screenPoint.Y)
 
@@ -1659,11 +1570,9 @@ toggleStealthBg.MouseButton1Click:Connect(function()
     if settings.stealthMode then
         showNotification("👻 Modo Stealth ATIVADO! UI invisível.", CORES.Sucesso)
         painel.Visible = false
-        floatingButton.Visible = false
     else
         showNotification("Modo Stealth DESATIVADO! UI visível.", CORES.Erro)
-        painel.Visible = panelIsVisible
-        floatingButton.Visible = true
+        painel.Visible = panelIsVisible -- Volta ao estado normal de visibilidade do painel
     end
     saveSettings()
 end)
@@ -1700,8 +1609,11 @@ for themeName, themeColors in pairs(TEMAS) do
     themeButton.Font = Enum.Font.SourceSansBold
     themeButton.TextSize = 16
     themeButton.Parent = themeFrame
-    themeButton.CornerRadius = UDim.new(0, 8)
     themeButton.ZIndex = 10
+
+    local uiCornerThemeButton = Instance.new("UICorner")
+    uiCornerThemeButton.CornerRadius = UDim.new(0, 8)
+    uiCornerThemeButton.Parent = themeButton
 
     -- Animação de Hover/Click para themeButton
     themeButton.MouseEnter:Connect(function() TweenService:Create(themeButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1726,8 +1638,11 @@ saveConfigButton.Font = Enum.Font.SourceSansBold
 saveConfigButton.TextColor3 = CORES.TextoClaro
 saveConfigButton.BackgroundColor3 = CORES.FundoComponente
 saveConfigButton.Parent = configPage
-saveConfigButton.CornerRadius = UDim.new(0, 10)
 saveConfigButton.ZIndex = 8
+
+local uiCornerSaveConfigButton = Instance.new("UICorner")
+uiCornerSaveConfigButton.CornerRadius = UDim.new(0, 10)
+uiCornerSaveConfigButton.Parent = saveConfigButton
 
 -- Animação de Hover/Click para saveConfigButton
 saveConfigButton.MouseEnter:Connect(function() TweenService:Create(saveConfigButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
@@ -1735,16 +1650,14 @@ saveConfigButton.MouseLeave:Connect(function() TweenService:Create(saveConfigBut
 saveConfigButton.MouseButton1Down:Connect(function() TweenService:Create(saveConfigButton, TweenInfo.new(0.05), {Size = UDim2.new(0.88, 0, 0, 48)}):Play() end)
 saveConfigButton.MouseButton1Up:Connect(function() TweenService:Create(saveConfigButton, TweenInfo.new(0.1), {Size = UDim2.new(0.9, 0, 0, 50)}):Play() end)
 
-
 saveConfigButton.MouseButton1Click:Connect(function()
     saveSettings()
 end)
 
-
 -- Desenho "HUNSFUCK" no Painel (Visual) 🎨
 local hunsfuckArt = Instance.new("TextLabel")
 hunsfuckArt.Size = UDim2.new(0.8, 0, 0.15, 0)
-hunsfuckArt.Position = UDim2.new(0.1, 0, 0.8, 0)
+hunsfuckArt.Position = UDim2.new(0.1, 0, 0.8, 0) -- Ajuste a posição conforme necessário
 hunsfuckArt.BackgroundColor3 = Color3.new(1,1,1)
 hunsfuckArt.BackgroundTransparency = 1
 hunsfuckArt.TextColor3 = CORES.Primaria
@@ -1755,10 +1668,97 @@ hunsfuckArt.Text = "HUNSFUCK"
 hunsfuckArt.TextStrokeTransparency = 0
 hunsfuckArt.TextStrokeColor3 = CORES.Secundaria
 hunsfuckArt.Parent = painel
-hunsfuckArt.ZIndex = 6
+hunsfuckArt.ZIndex = 101 -- Garante que a arte apareça no painel
 
 
--- Sistema de Hotkeys Global
+-- // Novo Sistema de Autenticação de Chave (Flutuante no centro) \\ --
+local keyCorreta = "byogart" -- 🔑 A chave para o poder!
+
+local keyFrame = Instance.new("Frame")
+keyFrame.Size = UDim2.new(0.7, 0, 0.45, 0)
+keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+keyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+keyFrame.BackgroundColor3 = CORES.FundoUI
+keyFrame.BorderSizePixel = 0
+keyFrame.Parent = ScreenGui -- Parentado diretamente ao ScreenGui
+keyFrame.ClipsDescendants = true
+keyFrame.Visible = true -- Começa visível
+keyFrame.ZIndex = 102 -- ZIndex muito alto para garantir que apareça sobre tudo
+
+local uiCornerKeyFrame = Instance.new("UICorner")
+uiCornerKeyFrame.CornerRadius = UDim.new(0, 12)
+uiCornerKeyFrame.Parent = keyFrame
+
+local keyFrameAspectRatio = Instance.new("UIAspectRatioConstraint")
+keyFrameAspectRatio.AspectRatio = 400 / 220
+keyFrameAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
+keyFrameAspectRatio.DominantAxis = Enum.DominantAxis.Width
+keyFrameAspectRatio.Parent = keyFrame
+
+local uiStrokeKey = Instance.new("UIStroke")
+uiStrokeKey.Color = CORES.BordaClara
+uiStrokeKey.Transparency = 0.8
+uiStrokeKey.Thickness = 1
+uiStrokeKey.Parent = keyFrame
+
+local tituloKey = Instance.new("TextLabel")
+tituloKey.Size = UDim2.new(1, 0, 0.3, 0)
+tituloKey.Position = UDim2.new(0, 0, 0, 0)
+tituloKey.BackgroundColor3 = CORES.Primaria
+tituloKey.TextColor3 = CORES.TextoClaro
+tituloKey.Font = Enum.Font.SourceSansBold
+tituloKey.TextSize = 30
+tituloKey.Text = "💀 HUNSFUCK 💀"
+tituloKey.Parent = keyFrame
+
+local caixaKey = Instance.new("TextBox")
+caixaKey.Size = UDim2.new(0.85, 0, 0.18, 0)
+caixaKey.Position = UDim2.new(0.075, 0, 0.45, 0)
+caixaKey.PlaceholderText = "🔑 Digite a chave secreta..."
+caixaKey.Text = ""
+caixaKey.BackgroundColor3 = CORES.FundoComponente
+caixaKey.TextColor3 = CORES.TextoClaro
+caixaKey.Font = Enum.Font.SourceSans
+caixaKey.TextSize = 20
+caixaKey.BorderSizePixel = 0
+caixaKey.Parent = keyFrame
+
+local uiCornerCaixaKey = Instance.new("UICorner")
+uiCornerCaixaKey.CornerRadius = UDim.new(0, 6)
+uiCornerCaixaKey.Parent = caixaKey
+
+local botaoConfirmar = Instance.new("TextButton")
+botaoConfirmar.Size = UDim2.new(0.65, 0, 0.22, 0)
+botaoConfirmar.Position = UDim2.new(0.175, 0, 0.75, 0)
+botaoConfirmar.Text = "🚀 Confirmar Acesso 🚀"
+botaoConfirmar.Font = Enum.Font.SourceSansBold
+botaoConfirmar.TextColor3 = CORES.TextoClaro
+botaoConfirmar.BackgroundColor3 = CORES.Sucesso
+botaoConfirmar.BorderSizePixel = 0
+botaoConfirmar.Parent = keyFrame
+
+local uiCornerBotaoConfirmar = Instance.new("UICorner")
+uiCornerBotaoConfirmar.CornerRadius = UDim.new(0, 10)
+uiCornerBotaoConfirmar.Parent = botaoConfirmar
+
+-- Animação de Hover/Click para botaoConfirmar
+botaoConfirmar.MouseEnter:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
+botaoConfirmar.MouseLeave:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play() end)
+botaoConfirmar.MouseButton1Down:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.05), {Size = UDim2.new(0.63, 0, 0.20, 0)}):Play() end)
+botaoConfirmar.MouseButton1Up:Connect(function() TweenService:Create(botaoConfirmar, TweenInfo.new(0.1), {Size = UDim2.new(0.65, 0, 0.22, 0)}):Play() end)
+
+local creditosKey = Instance.new("TextLabel")
+creditosKey.Size = UDim2.new(1, 0, 0.1, 0)
+creditosKey.Position = UDim2.new(0, 0, 0.9, 0)
+creditosKey.Text = "✨ Créditos: ogart - A Lenda! ✨"
+creditosKey.TextColor3 = CORES.Sucesso
+creditosKey.BackgroundTransparency = 1
+creditosKey.Font = Enum.Font.SourceSansItalic
+creditosKey.TextSize = 18
+creditosKey.Parent = keyFrame
+
+
+-- // Sistema de Hotkeys Global \\ --
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     if gameProcessedEvent then return end
 
@@ -1772,7 +1772,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
         toggleInvisivel(not settings.invisible)
         updateToggleUI(toggleInvisivelBg, toggleInvisivelHandle, settings.invisible)
     elseif input.KeyCode == settings.hotkeys.minimizar then
-        floatingButton.MouseButton1Click:Fire()
+        -- O botão de minimizar agora controla a minimização/maximização interna do painel
+        minimizarBtn.MouseButton1Click:Fire() 
     elseif input.KeyCode == settings.hotkeys.clickTp then
         toggleClickTeleport(not clickTpActive)
         updateToggleUI(toggleClickTpBg, toggleClickTpHandle, clickTpActive)
@@ -1789,6 +1790,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 end)
 
 -- Confirmar key e abrir painel 🔓
+local panelIsVisible = true -- Variável para controlar se o painel principal está aberto (não minimizado)
+
 botaoConfirmar.MouseButton1Click:Connect(function()
     if caixaKey.Text == keyCorreta then
         local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
@@ -1797,7 +1800,7 @@ botaoConfirmar.MouseButton1Click:Connect(function()
         local tweenKeyFrame = TweenService:Create(keyFrame, tweenInfo, goal)
         
         for _, child in pairs(keyFrame:GetChildren()) do
-            if child:IsA("TextLabel") or child:IsA("TextBox") or child:IsA("TextButton") or child:IsA("UIStroke") then
+            if child:IsA("TextLabel") or child:IsA("TextBox") or child:IsA("TextButton") or child:IsA("UIStroke") or child:IsA("UICorner") or child:IsA("UIAspectRatioConstraint") then
                 TweenService:Create(child, tweenInfo, {TextTransparency = 1, BackgroundTransparency = 1, Transparency = 1}):Play()
             end
         end
@@ -1806,16 +1809,13 @@ botaoConfirmar.MouseButton1Click:Connect(function()
         tweenKeyFrame.Completed:Wait()
         keyFrame:Destroy()
 
-        floatingButton.Visible = true
         if not settings.stealthMode then
              painel.Visible = true
              painel.BackgroundTransparency = 0
              panelIsVisible = true
-             floatingButton.Text = "❌"
              showNotification("🎉 Acesso LIBERADO! Bem-vindo ao HUNSFUCK!", CORES.Sucesso, 5)
         else
             showNotification("🎉 Acesso LIBERADO! HUNSFUCK está em modo Stealth. Use Hotkeys!", CORES.Sucesso, 5)
-            floatingButton.Visible = false
         end
     else
         caixaKey.Text = ""
@@ -1841,25 +1841,35 @@ local function initializeUIStates()
     updateToggleUI(toggleNoclipBg, toggleNoclipHandle, settings.noclip)
     updateToggleUI(toggleFlyBg, toggleFlyHandle, settings.fly)
     updateToggleUI(toggleInvisivelBg, toggleInvisivelHandle, settings.invisible)
-    updateToggleUI(toggleStealthBg, toggleStealthHandle, settings.stealthMode)
     
     -- Para Click TP, precisamos definir o estado 'clickTpActive' globalmente
-    clickTpActive = settings.clickTp -- Define o estado correto
+    clickTpActive = settings.clickTp
     updateToggleUI(toggleClickTpBg, toggleClickTpHandle, settings.clickTp)
-    if settings.clickTp then toggleClickTeleport(true) end -- Ativa a função se estava on
+    if settings.clickTp then toggleClickTeleport(true) end
     
     updateToggleUI(toggleEspBoxesBg, toggleEspBoxesHandle, settings.espBoxes)
     updateToggleUI(toggleEspTracersBg, toggleEspTracersHandle, settings.espTracers)
     updateToggleUI(toggleAntiAFKBg, toggleAntiAFKHandle, settings.antiAFK)
+    updateToggleUI(toggleStealthBg, toggleStealthHandle, settings.stealthMode)
+
 
     -- Aplica valores iniciais aos sliders
     walkSpeedSlider:SetAttribute("Value", settings.walkSpeed)
-    walkSpeedSlider.Changed:Fire("Value") -- Dispara para atualizar a UI do slider
+    walkSpeedSlider.Changed:Fire("Value")
     jumpPowerSlider:SetAttribute("Value", settings.jumpPower)
     jumpPowerSlider.Changed:Fire("Value")
 
     -- Aplica o tema salvo
     applyTheme(TEMAS[settings.tema] or TEMAS["Vermelho Sangue"])
+
+    -- Se o modo stealth estiver ativo, esconda o painel no início (após o login)
+    if settings.stealthMode then
+        painel.Visible = false
+        panelIsVisible = false -- Indica que o painel está 'fechado' no modo stealth
+    else
+        painel.Visible = true
+        panelIsVisible = true
+    end
 end
 
 -- Reconexão Automática de Funções (Pós-Death) 🔄
@@ -1868,17 +1878,15 @@ Player.CharacterAdded:Connect(function(newChar)
     HumanoidRootPart = newChar:WaitForChild("HumanoidRootPart", 10)
     Humanoid = newChar:WaitForChild("Humanoid", 10)
 
-    -- Garante que HRP e Humanoid existem antes de continuar
     if HumanoidRootPart and Humanoid then
         task.wait(0.1)
         if settings.fly then toggleFly(true); updateToggleUI(toggleFlyBg, toggleFlyHandle, true) end
         if settings.invisible then toggleInvisivel(true); updateToggleUI(toggleInvisivelBg, toggleInvisivelHandle, true) end
         if settings.noclip then toggleNoclip(true); updateToggleUI(toggleNoclipBg, toggleNoclipHandle, true) end
-        if settings.walkSpeed ~= 16 then updateWalkSpeed(settings.walkSpeed) end -- Reaplica WalkSpeed se diferente do padrão
-        if settings.jumpPower ~= 50 then updateJumpPower(settings.jumpPower) end -- Reaplica JumpPower se diferente do padrão
+        if settings.walkSpeed ~= 16 then updateWalkSpeed(settings.walkSpeed) end
+        if settings.jumpPower ~= 50 then updateJumpPower(settings.jumpPower) end
         if settings.antiAFK then toggleAntiAFK(true); updateToggleUI(toggleAntiAFKBg, toggleAntiAFKHandle, true) end
         
-        -- Reativa clickTP se estava ativo
         if settings.clickTp then toggleClickTeleport(true) end
 
         showNotification("Personagem resetado, funções ativas reaplicadas!", CORES.Sucesso, 2)
