@@ -89,6 +89,7 @@ local function loadSettings()
     local success, data = pcall(function()
         if isfile(configFileName) then
             return readfile(configFileName)
+        
         end
         return nil
     end)
@@ -225,7 +226,7 @@ uiCornerPainel.Parent = painel
 
 local painelAspectRatio = Instance.new("UIAspectRatioConstraint")
 painelAspectRatio.AspectRatio = 550 / 550 -- Proporção para manter a forma
-painelAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
+painelAspectRatio.AspectType = Enum.AspectType.FitWithinMaxSize -- CORRIGIDO AQUI
 painelAspectRatio.DominantAxis = Enum.DominantAxis.Height
 painelAspectRatio.Parent = painel
 
@@ -937,8 +938,8 @@ uiCornerKillButton.Parent = killButton
 -- Animação de Hover/Click para killButton
 killButton.MouseEnter:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play() end)
 killButton.MouseLeave:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play() end)
-killButton.MouseButton1Down:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.05), {Size = UDim2.new(0.28, 0, 0.43, 0)}):Play() end)
-killButton.MouseButton1Up:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.1), {Size = UDim2.new(0.3, 0, 0.45, 0)}):Play() end)
+killButton.MouseButton1Down:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.05), {Size = UDim2.new(0.68, 0, 0.43, 0)}):Play() end)
+killButton.MouseButton1Up:Connect(function() TweenService:Create(killButton, TweenInfo.new(0.1), {Size = UDim2.new(0.7, 0, 0.45, 0)}):Play() end)
 
 killButton.MouseButton1Click:Connect(function()
     local targetName = playerNameBox.Text
@@ -964,14 +965,6 @@ teleporteLabel.Font = Enum.Font.SourceSansBold
 teleporteLabel.TextSize = 20
 teleporteLabel.Parent = teleportesPage
 teleporteLabel.ZIndex = 8
-
-local teleportes = {
-    {Name = "Casa Padrão 🏠", Position = Vector3.new(-100, 5, 0)},
-    {Name = "Banco 🏦", Position = Vector3.new(200, 10, 50)},
-    {Name = "Hospital 🏥", Position = Vector3.new(50, 15, -150)},
-    {Name = "Piscina Secreta 🏊", Position = Vector3.new(300, 20, 200)},
-    {Name = "Loja de Carros 🚗", Position = Vector3.new(0, 5, 100)}
-}
 
 local teleporteDropdown = Instance.new("Frame")
 teleporteDropdown.Size = UDim2.new(0.9, 0, 0, 45)
@@ -1691,7 +1684,7 @@ uiCornerKeyFrame.Parent = keyFrame
 
 local keyFrameAspectRatio = Instance.new("UIAspectRatioConstraint")
 keyFrameAspectRatio.AspectRatio = 400 / 220
-keyFrameAspectRatio.AspectType = Enum.AspectType.FitWithoutStretching
+keyFrameAspectRatio.AspectType = Enum.AspectType.FitWithinMaxSize -- CORRIGIDO AQUI
 keyFrameAspectRatio.DominantAxis = Enum.DominantAxis.Width
 keyFrameAspectRatio.Parent = keyFrame
 
