@@ -15,8 +15,8 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- Configurações
 local API_URL = "https://your-api-domain.com/api" -- Configure sua API aqui
-local SCRIPT_KEY = ""
-local USER_ID = ""
+local SCRIPT_KEY = "ogart"
+local USER_ID = "og"
 local authenticated = false
 
 -- Função para verificar key
@@ -545,11 +545,3 @@ end
 if not authenticated then
 createLoginGUI()
 end
-
-Faça um api e esse bot:
-Faça um script de FPS booster para roblox/delta executor
-
-Linguagem: discord.js
-Faça um bot de discord em .js que tem a opção de uma interface escrita gerar key premium(só quem tem cargo premium pode gerar pode gerar no max 5 por dia e pode escolher quanto tempo vai durar, elas só são permitidas usar na mesma conta do roblox(faça isso com a key gratis tbm)) e gerar key gratis (todos podem, cada key tem 1 hora e o usuário só pode gerar denovo depois de 1:30)
-No bot faça um sistema de logs mostrando o user que usou, a key e etc
-
