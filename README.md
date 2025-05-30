@@ -22,7 +22,7 @@ local mouse = localPlayer:GetMouse()
 local camera = Workspace.CurrentCamera
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "LostFpsBoosterGui_V2"
+gui.Name = "LostFpsBoosterGui_beta"
 gui.Parent = localPlayer:WaitForChild("PlayerGui")
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.ResetOnSpawn = false
@@ -57,7 +57,7 @@ titleLabel.BackgroundColor3 = Color3.fromRGB(0, 220, 0)
 titleLabel.TextColor3 = Color3.fromRGB(10, 10, 10)
 titleLabel.Size = UDim2.new(1, 0, 0, 35)
 titleLabel.Font = Enum.Font.GothamSemibold
-titleLabel.Text = "🚀 LOSTsCRIPTS - FPS Booster V2 🚀"
+titleLabel.Text = "🚀 LOSTsCRIPTS - v0.0.1(beta) 🚀"
 titleLabel.TextSize = 20
 
 local minimizeButton = Instance.new("TextButton")
@@ -82,7 +82,7 @@ creditsLabel.TextColor3 = Color3.fromRGB(0, 180, 0)
 creditsLabel.Size = UDim2.new(1, 0, 0, 25)
 creditsLabel.Position = UDim2.new(0, 0, 1, -25)
 creditsLabel.Font = Enum.Font.Code
-creditsLabel.Text = "✨ by ogart (v2) ✨"
+creditsLabel.Text = "✨ by ogart (beta) ✨"
 creditsLabel.TextSize = 16
 
 local tabsFrame = Instance.new("Frame")
